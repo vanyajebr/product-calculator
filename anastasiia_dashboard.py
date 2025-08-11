@@ -16,16 +16,16 @@ def calculate_heizlastberechnung(area_m2):
     return original_price, discounted_price
 
 def calculate_hydraulischer_abgleich(area_m2):
-    """Calculate Hydraulischer Abgleich price with 20% iSFP discount"""
+    """Calculate Hydraulischer Abgleich"""
     if area_m2 < 150:
         original_price = 800
-        discounted_price = 640  # 20% discount applied
+        discounted_price = original_price
     elif area_m2 <= 250:
         original_price = 900
-        discounted_price = 720  # 20% discount applied
+        discounted_price = original_price
     else:
         original_price = 900 + (4 * area_m2)
-        discounted_price = original_price * 0.8  # 20% discount applied
+        discounted_price = original_price # 20% discount applied
     
     return original_price, discounted_price
 
@@ -233,3 +233,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
