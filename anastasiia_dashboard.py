@@ -10,7 +10,7 @@ def calculate_heizlastberechnung(area_m2):
         original_price = 1250
         discounted_price = 1000  # 20% discount applied
     else:
-        original_price = 1000 + (4 * area_m2)
+        original_price = 1000 + (4 * (area_m2 - 250))
         discounted_price = original_price * 0.8  # 20% discount applied
     
     return original_price, discounted_price
@@ -24,7 +24,7 @@ def calculate_hydraulischer_abgleich(area_m2):
         original_price = 900
         discounted_price = original_price
     else:
-        original_price = 900 + (4 * area_m2)
+        original_price = 900 + (4 * (area_m2-250))
         discounted_price = original_price # 20% discount applied
     
     return original_price, discounted_price
@@ -233,4 +233,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
