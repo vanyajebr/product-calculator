@@ -160,7 +160,7 @@ def main():
             antrag_details.append({
                 'Type': typ,
                 'Original Price': f"€{antrag_price:.2f}",
-                'Forderung (50%)': f"€{antrag_forderung:.2f}",
+                'Forderung': f"€{antrag_forderung:.2f}",
                 'Final Price': f"€{antrag_final:.2f}"
             })
         
@@ -177,7 +177,7 @@ def main():
         st.header("📊 Calculation Results")
         
         # Summary cards
-        col1, col2, col3, col4 = st.columns(4)
+        col1, col2, col3 = st.columns(3)
         
         with col1:
             st.metric("Full Price", f"€{total_full_price:.2f}", 
@@ -189,9 +189,6 @@ def main():
         with col3:
             st.metric("Forderung Subsidy", f"€{total_forderung:.2f}")
         
-        with col4:
-            st.metric("Total Savings", f"€{total_original - total_user_pays:.2f}")
-        
         # Detailed breakdown
         st.subheader("📋 Detailed Breakdown")
         
@@ -200,21 +197,21 @@ def main():
                 'Product': 'Heizlastberechnung',
                 'Original Price': f"€{heiz_original:.2f}",
                 'After iSFP Discount': f"€{heiz_discounted:.2f}",
-                'Forderung (50%)': f"€{heiz_forderung:.2f}",
+                'Forderung': f"€{heiz_forderung:.2f}",
                 'Final Price': f"€{heiz_final:.2f}"
             },
             {
                 'Product': 'Hydraulischer Abgleich',
                 'Original Price': f"€{hydr_original:.2f}",
                 'After iSFP Discount': f"€{hydr_discounted:.2f}",
-                'Forderung (50%)': f"€{hydr_forderung:.2f}",
+                'Forderung': f"€{hydr_forderung:.2f}",
                 'Final Price': f"€{hydr_final:.2f}"
             },
             {
                 'Product': 'iSFP',
                 'Original Price': f"€{isfp_original:.2f}",
                 'After iSFP Discount': f"€{isfp_original:.2f}",
-                'Forderung (Subsidy)': f"€{isfp_subsidy:.2f}",
+                'Forderung': f"€{isfp_subsidy:.2f}",
                 'Final Price': f"€{isfp_final:.2f}"
             }
         ]
@@ -225,26 +222,14 @@ def main():
                 'Product': f"Antragstellung {detail['Type']} #{i+1}",
                 'Original Price': detail['Original Price'],
                 'After iSFP Discount': detail['Original Price'],
-                'Forderung (50%)': detail['Forderung (50%)'],
+                'Forderung': detail['Forderung'],
                 'Final Price': detail['Final Price']
             })
         
         df = pd.DataFrame(breakdown_data)
         st.dataframe(df, use_container_width=True, hide_index=True)
         
-        # Summary totals
-        st.subheader("💰 Summary")
-        st.success(f"""
-        **Full Price (with iSFP discounts):** €{total_full_price:.2f}
-        
-        **Price User Pays:** €{total_user_pays:.2f}
-        
-        **Total Forderung Subsidies:** €{total_forderung:.2f}
-        
-        **Total iSFP Discounts:** €{total_discounts:.2f}
-        
-        **Total Savings:** €{total_original - total_user_pays:.2f}
-        """)
+
 
 if __name__ == "__main__":
     main()
