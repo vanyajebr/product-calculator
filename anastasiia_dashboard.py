@@ -3,7 +3,7 @@ import pandas as pd
 
 def calculate_heizlastberechnung(area_m2):
     """Calculate Heizlastberechnung price with 20% iSFP discount"""
-    if area_m2 <= 150:
+    if area_m2 < 150:
         original_price = 900
         discounted_price = 720  # 20% discount applied
     elif area_m2 <= 250:
@@ -17,7 +17,7 @@ def calculate_heizlastberechnung(area_m2):
 
 def calculate_hydraulischer_abgleich(area_m2):
     """Calculate Hydraulischer Abgleich price with 20% iSFP discount"""
-    if area_m2 <= 150:
+    if area_m2 < 150:
         original_price = 800
         discounted_price = 640  # 20% discount applied
     elif area_m2 <= 250:
@@ -170,7 +170,7 @@ def main():
         total_original = heiz_original + hydr_original + isfp_original + antrag_total_original
         total_discounts = (heiz_original - heiz_discounted) + (hydr_original - hydr_discounted)
         total_forderung = heiz_forderung + hydr_forderung + isfp_subsidy + antrag_total_forderung
-        total_full_price = heiz_discounted + hydr_discounted + isfp_final + antrag_total_original
+        total_full_price = heiz_discounted + hydr_discounted + isfp_original + antrag_total_original
         total_user_pays = heiz_final + hydr_final + isfp_final + antrag_total_final
         
         # Display results
