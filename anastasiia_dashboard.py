@@ -161,7 +161,7 @@ def main():
             {euro_de(total_full_price)} (Vollpreis) sowie zusätzlich 3 % für die Einzelmaßnahme Heizung.<br><br>
             Es gibt eine 50 % Förderung auf unsere Leistungen in Höhe von {euro_de(total_forderung)} 
             sowie zusätzlich eine 1,5 % Förderung für die Einzelmaßnahme Heizung = 
-            {euro_de(total_user_pays)} + 1,5 % Endpreis.<br><br>
+             <span style="color:red; font-weight:bold; font-size: 16px;">{euro_de(total_user_pays)} + 1,5 % Endpreis</span>.<br><br>
             Falls das Angebot für Heizung und Montage in Ihrem Fall mehr als {euro_de(investment_cost_limit)} 
             beträgt, überschreitet dies die durch die KfW festgelegten staatlichen Fördergrenzen für unsere Leistungen. 
             In diesem Fall entfällt die Förderung für diesen Teil unserer Arbeit, und Sie zahlen den vollen Preis für dieses Produkt.
@@ -173,6 +173,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
