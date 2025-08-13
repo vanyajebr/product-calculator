@@ -156,7 +156,7 @@ def main():
         st.subheader("📄 Dies ist ein Template, das Sie in die Vorlage EffizienzBegleitung HH+ einfügen sollen.")
         st.markdown(
             f"""
-            <p style="font-family: Arial; font-size:11px; color:black;">
+            <p style="font-family: Arial; font-size:13.5px; color:black; font-weight: bold;">
             Für Ihr <b>{wohneinheiten}</b> WE-Haus mit <b>{area_m2} m²</b> beträgt der Preis für die Energie-Begleitung 
             <b>{euro_de(total_full_price)}</b> (Vollpreis) sowie zusätzlich 3 % für die Einzelmaßnahme Heizung.<br><br>
             Es gibt eine 50 % Förderung auf unsere Leistungen in Höhe von <b>{euro_de(total_forderung)}</b> 
@@ -173,5 +173,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
