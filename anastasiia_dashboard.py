@@ -3,29 +3,29 @@ import pandas as pd
 
 def calculate_heizlastberechnung(area_m2):
     """Calculate Heizlastberechnung price with 20% iSFP discount"""
-    if area_m2 <= 150:
+    if area_m2 < 150:
         original_price = 900
         discounted_price = 720  # 20% discount applied
     elif area_m2 <= 250:
         original_price = 1250
         discounted_price = 1000  # 20% discount applied
     else:
-        original_price = 1000 + (4 * (area_m2 - 250))
+        original_price = 1000 + (4 * area_m2)
         discounted_price = original_price * 0.8  # 20% discount applied
     
     return original_price, discounted_price
 
 def calculate_hydraulischer_abgleich(area_m2):
-    """Calculate Hydraulischer Abgleich"""
-    if area_m2 <= 150:
+    """Calculate Hydraulischer Abgleich price with 20% iSFP discount"""
+    if area_m2 < 150:
         original_price = 800
-        discounted_price = original_price
+        discounted_price = 640  # 20% discount applied
     elif area_m2 <= 250:
         original_price = 900
-        discounted_price = original_price
+        discounted_price = 720  # 20% discount applied
     else:
-        original_price = 900 + (4 * (area_m2-250))
-        discounted_price = original_price # 20% discount applied
+        original_price = 900 + (4 * area_m2)
+        discounted_price = original_price * 0.8  # 20% discount applied
     
     return original_price, discounted_price
 
@@ -86,102 +86,67 @@ def main():
     with col2:
         area_m2 = st.number_input("Area (m²)", min_value=1, value=100, step=1)
     
-    # Einzelmaßnahmen section
-    st.header("🔧 Einzelmaßnahmen")
-    
-    # Initialize session state for einzelmassnahmen
-    if 'einzelmassnahmen' not in st.session_state:
-        st.session_state.einzelmassnahmen = []
-    
-    # Add new einzelmaßnahme
-    col1, col2, col3 = st.columns([2, 1, 1])
-    
-    with col1:
-        new_typ = st.selectbox("Select Type", ["Heizung", "Other"], key="new_typ")
-    
-    with col2:
-        st.write("")  # Spacer
-        st.write("")  # Spacer
-        if st.button("Add Einzelmaßnahme"):
-            st.session_state.einzelmassnahmen.append(new_typ)
-            st.rerun()
-    
-    with col3:
-        st.write("")  # Spacer
-        st.write("")  # Spacer
-        if st.button("Clear All"):
-            st.session_state.einzelmassnahmen = []
-            st.rerun()
-    
-    # Display added einzelmaßnahmen
-    if st.session_state.einzelmassnahmen:
-        st.subheader("Added Einzelmaßnahmen:")
-        for i, typ in enumerate(st.session_state.einzelmassnahmen):
-            col1, col2 = st.columns([3, 1])
-            with col1:
-                st.write(f"{i+1}. {typ}")
-            with col2:
-                if st.button("Remove", key=f"remove_{i}"):
-                    st.session_state.einzelmassnahmen.pop(i)
-                    st.rerun()
-    
     st.markdown("---")
     
     # Calculate button
     if st.button("💰 Calculate Total Price", type="primary"):
-        # Calculate all products
+        # Initialize session state for bundle configuration
+        if 'include_isfp' not in st.session_state:
+            st.session_state.include_isfp = True
         
-        # 1. Heizlastberechnung
-        heiz_original, heiz_discounted = calculate_heizlastberechnung(area_m2)
+        # Bundle configuration
+        st.header("📦 Bundle Configuration")
+        include_isfp = st.checkbox("Include iSFP in bundle", value=st.session_state.include_isfp, key="isfp_toggle")
+        
+        if include_isfp != st.session_state.include_isfp:
+            st.session_state.include_isfp = include_isfp
+            st.rerun()
+        
+        # Calculate based on bundle configuration
+        if include_isfp:
+            # Full bundle: Heizlastberechnung gets 20% discount, Hydraulischer Abgleich stays full price
+            heiz_original, heiz_discounted = calculate_heizlastberechnung(area_m2, apply_discount=True)
+            hydr_original, hydr_discounted = calculate_hydraulischer_abgleich(area_m2, apply_discount=False)
+            isfp_original, isfp_final, isfp_subsidy = calculate_isfp(wohneinheiten)
+            bundle_type = "Full Bundle (with iSFP)"
+        else:
+            # 2 products only: Hydraulischer Abgleich gets 20% discount, Heizlastberechnung stays full price
+            heiz_original, heiz_discounted = calculate_heizlastberechnung(area_m2, apply_discount=False)
+            hydr_original, hydr_discounted = calculate_hydraulischer_abgleich(area_m2, apply_discount=True)
+            isfp_original, isfp_final, isfp_subsidy = 0, 0, 0
+            bundle_type = "2 Products Bundle (without iSFP)"
+        
+        # Calculate product costs
         heiz_forderung = heiz_discounted * 0.5
         heiz_final = heiz_discounted - heiz_forderung
         
-        # 2. Hydraulischer Abgleich
-        hydr_original, hydr_discounted = calculate_hydraulischer_abgleich(area_m2)
         hydr_forderung = hydr_discounted * 0.5
         hydr_final = hydr_discounted - hydr_forderung
         
-        # 3. iSFP
-        isfp_original, isfp_final, isfp_subsidy = calculate_isfp(wohneinheiten)
-        
-        # 4. Antragstellung Einzelmaßnahmen
-        antrag_total_original = 0
-        antrag_total_forderung = 0
-        antrag_details = []
-        
-        for typ in st.session_state.einzelmassnahmen:
-            antrag_price = calculate_antragstellung(wohneinheiten, typ)
-            antrag_forderung = antrag_price * 0.5
-            antrag_final = antrag_price - antrag_forderung
-            
-            antrag_total_original += antrag_price
-            antrag_total_forderung += antrag_forderung
-            
-            antrag_details.append({
-                'Type': typ,
-                'Original Price': f"€{antrag_price:.2f}",
-                'Forderung': f"€{antrag_forderung:.2f}",
-                'Final Price': f"€{antrag_final:.2f}"
-            })
-        
-        antrag_total_final = antrag_total_original - antrag_total_forderung
-        
         # Calculate totals
-        total_original = heiz_original + hydr_original + isfp_original + antrag_total_original
-        total_discounts = (heiz_original - heiz_discounted) + (hydr_original - hydr_discounted)
-        total_forderung = heiz_forderung + hydr_forderung + isfp_subsidy + antrag_total_forderung
-        total_full_price = heiz_discounted + hydr_discounted + isfp_original + antrag_total_original
-        total_user_pays = heiz_final + hydr_final + isfp_final + antrag_total_final
+        if include_isfp:
+            total_original = heiz_original + hydr_original + isfp_original
+            total_discounts = (heiz_original - heiz_discounted) + (hydr_original - hydr_discounted)
+            total_forderung = heiz_forderung + hydr_forderung + isfp_subsidy
+            total_full_price = heiz_discounted + hydr_discounted + isfp_original
+            total_user_pays = heiz_final + hydr_final + isfp_final
+        else:
+            total_original = heiz_original + hydr_original
+            total_discounts = (heiz_original - heiz_discounted) + (hydr_original - hydr_discounted)
+            total_forderung = heiz_forderung + hydr_forderung
+            total_full_price = heiz_discounted + hydr_discounted
+            total_user_pays = heiz_final + hydr_final
         
         # Display results
-        st.header("📊 Calculation Results")
+        st.header(f"📊 Calculation Results - {bundle_type}")
         
         # Summary cards
         col1, col2, col3 = st.columns(3)
         
         with col1:
+            discount_text = f"-€{total_discounts:.2f} (20% discount)" if total_discounts > 0 else "No discount"
             st.metric("Full Price", f"€{total_full_price:.2f}", 
-                     delta=f"-€{total_discounts:.2f} (iSFP discount)")
+                     delta=discount_text)
         
         with col2:
             st.metric("User Pays", f"€{total_user_pays:.2f}")
@@ -196,34 +161,26 @@ def main():
             {
                 'Product': 'Heizlastberechnung',
                 'Original Price': f"€{heiz_original:.2f}",
-                'After iSFP Discount': f"€{heiz_discounted:.2f}",
+                'After 20% Discount': f"€{heiz_discounted:.2f}",
                 'Forderung': f"€{heiz_forderung:.2f}",
                 'Final Price': f"€{heiz_final:.2f}"
             },
             {
                 'Product': 'Hydraulischer Abgleich',
                 'Original Price': f"€{hydr_original:.2f}",
-                'After iSFP Discount': f"€{hydr_discounted:.2f}",
+                'After 20% Discount': f"€{hydr_discounted:.2f}",
                 'Forderung': f"€{hydr_forderung:.2f}",
                 'Final Price': f"€{hydr_final:.2f}"
-            },
-            {
-                'Product': 'iSFP',
-                'Original Price': f"€{isfp_original:.2f}",
-                'After iSFP Discount': f"€{isfp_original:.2f}",
-                'Forderung': f"€{isfp_subsidy:.2f}",
-                'Final Price': f"€{isfp_final:.2f}"
             }
         ]
         
-        # Add Antragstellung details
-        for i, detail in enumerate(antrag_details):
+        if include_isfp:
             breakdown_data.append({
-                'Product': f"Antragstellung {detail['Type']} #{i+1}",
-                'Original Price': detail['Original Price'],
-                'After iSFP Discount': detail['Original Price'],
-                'Forderung': detail['Forderung'],
-                'Final Price': detail['Final Price']
+                'Product': 'iSFP',
+                'Original Price': f"€{isfp_original:.2f}",
+                'After 20% Discount': f"€{isfp_original:.2f}",
+                'Forderung': f"€{isfp_subsidy:.2f}",
+                'Final Price': f"€{isfp_final:.2f}"
             })
         
         df = pd.DataFrame(breakdown_data)
@@ -233,6 +190,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
