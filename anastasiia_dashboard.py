@@ -72,41 +72,39 @@ def main():
     with col2:
         area_m2 = st.number_input("Area (m²)", min_value=1, value=100, step=1)
     
+    # Initialize checkbox state once
+    if 'include_isfp' not in st.session_state:
+        st.session_state.include_isfp = True
+    
+    # Checkbox for including iSFP
+    include_isfp = st.checkbox("Include iSFP", value=st.session_state.include_isfp)
+    st.session_state.include_isfp = include_isfp  # keep it updated
+    
     st.markdown("---")
     
     # Calculate button
     if st.button("💰 Calculate Total Price", type="primary"):
-        # Initialize state once
-        if 'include_isfp' not in st.session_state:
-            st.session_state.include_isfp = True
         
-        # Checkbox for including iSFP
-        include_isfp = st.checkbox("Include iSFP", value=st.session_state.include_isfp, key="isfp_toggle")
-        st.session_state.include_isfp = include_isfp  # Always keep it updated
+        # Bundle logic
+        if include_isfp:
+            heiz_original, heiz_discounted = calculate_heizlastberechnung(area_m2, True)
+            hydr_original, hydr_discounted = calculate_hydraulischer_abgleich(area_m2, False)
+            isfp_original, isfp_final, isfp_subsidy = calculate_isfp(wohneinheiten)
+            bundle_type = "Full Bundle (with iSFP)"
+        else:
+            heiz_original, heiz_discounted = calculate_heizlastberechnung(area_m2, False)
+            hydr_original, hydr_discounted = calculate_hydraulischer_abgleich(area_m2, True)
+            isfp_original, isfp_final, isfp_subsidy = 0, 0, 0
+            bundle_type = "2 Products Bundle (without iSFP)"
         
-        # Calculate button
-        if st.button("💰 Calculate Total Price", type="primary"):
-            if include_isfp:
-                # Full bundle: Heizlastberechnung gets 20% discount, Hydraulischer Abgleich stays full price
-                heiz_original, heiz_discounted = calculate_heizlastberechnung(area_m2, True)
-                hydr_original, hydr_discounted = calculate_hydraulischer_abgleich(area_m2, False)
-                isfp_original, isfp_final, isfp_subsidy = calculate_isfp(wohneinheiten)
-                bundle_type = "Full Bundle (with iSFP)"
-            else:
-                # 2 products only: Hydraulischer Abgleich gets 20% discount, Heizlastberechnung stays full price
-                heiz_original, heiz_discounted = calculate_heizlastberechnung(area_m2, False)
-                hydr_original, hydr_discounted = calculate_hydraulischer_abgleich(area_m2, True)
-                isfp_original, isfp_final, isfp_subsidy = 0, 0, 0
-                bundle_type = "2 Products Bundle (without iSFP)"
-        
-        # Calculate product costs
+        # Product subsidies & final prices
         heiz_forderung = heiz_discounted * 0.5
         heiz_final = heiz_discounted - heiz_forderung
         
         hydr_forderung = hydr_discounted * 0.5
         hydr_final = hydr_discounted - hydr_forderung
         
-        # Calculate totals
+        # Totals
         if include_isfp:
             total_original = heiz_original + hydr_original + isfp_original
             total_discounts = (heiz_original - heiz_discounted) + (hydr_original - hydr_discounted)
@@ -120,24 +118,19 @@ def main():
             total_full_price = heiz_discounted + hydr_discounted
             total_user_pays = heiz_final + hydr_final
         
-        # Display results
+        # Results
         st.header(f"📊 Calculation Results - {bundle_type}")
         
-        # Summary cards
         col1, col2, col3 = st.columns(3)
-        
         with col1:
             discount_text = f"-€{total_discounts:.2f} (20% discount)" if total_discounts > 0 else "No discount"
-            st.metric("Full Price", f"€{total_full_price:.2f}", 
-                     delta=discount_text)
-        
+            st.metric("Full Price", f"€{total_full_price:.2f}", delta=discount_text)
         with col2:
             st.metric("User Pays", f"€{total_user_pays:.2f}")
-        
         with col3:
             st.metric("Forderung Subsidy", f"€{total_forderung:.2f}")
         
-        # Detailed breakdown
+        # Breakdown table
         st.subheader("📋 Detailed Breakdown")
         
         breakdown_data = [
@@ -171,6 +164,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
