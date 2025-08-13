@@ -156,13 +156,13 @@ def main():
         st.subheader("📄 Dies ist ein Template, das Sie in die Vorlage EffizienzBegleitung HH+ einfügen sollen.")
         st.markdown(
             f"""
-            <p style="font-family: Arial; font-size:13.5px; color:black; font-weight: bold;">
-            Für Ihr <b>{wohneinheiten}</b> WE-Haus mit <b>{area_m2} m²</b> beträgt der Preis für die Energie-Begleitung 
-            <b>{euro_de(total_full_price)}</b> (Vollpreis) sowie zusätzlich 3 % für die Einzelmaßnahme Heizung.<br><br>
-            Es gibt eine 50 % Förderung auf unsere Leistungen in Höhe von <b>{euro_de(total_forderung)}</b> 
+            <p style="font-family: Arial; font-size:14.5px; color:black; font-weight: bold;">
+            Für Ihr {wohneinheiten} WE-Haus mit {area_m2} m² beträgt der Preis für die Energie-Begleitung 
+            {euro_de(total_full_price)} (Vollpreis) sowie zusätzlich 3 % für die Einzelmaßnahme Heizung.<br><br>
+            Es gibt eine 50 % Förderung auf unsere Leistungen in Höhe von {euro_de(total_forderung)} 
             sowie zusätzlich eine 1,5 % Förderung für die Einzelmaßnahme Heizung = 
-            <b>{euro_de(total_user_pays)}</b> + 1,5 % Endpreis.<br><br>
-            Falls das Angebot für Heizung und Montage in Ihrem Fall mehr als <b>{euro_de(investment_cost_limit)}</b> 
+            {euro_de(total_user_pays)} + 1,5 % Endpreis.<br><br>
+            Falls das Angebot für Heizung und Montage in Ihrem Fall mehr als {euro_de(investment_cost_limit)} 
             beträgt, überschreitet dies die durch die KfW festgelegten staatlichen Fördergrenzen für unsere Leistungen. 
             In diesem Fall entfällt die Förderung für diesen Teil unserer Arbeit, und Sie zahlen den vollen Preis für dieses Produkt.
             </p>
@@ -173,6 +173,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
