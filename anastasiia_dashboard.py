@@ -81,7 +81,6 @@ def main():
             st.session_state.include_isfp = True
         
         # Bundle configuration
-        st.header("📦 Bundle Configuration")
         include_isfp = st.checkbox("Include iSFP in bundle", value=st.session_state.include_isfp, key="isfp_toggle")
         
         if include_isfp != st.session_state.include_isfp:
@@ -174,3 +173,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
