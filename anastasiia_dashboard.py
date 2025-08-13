@@ -15,7 +15,7 @@ def calculate_heizlastberechnung(area_m2, apply_discount=True):
     elif area_m2 <= 250:
         original_price = 1250
     else:
-        original_price = 1000 + (4 * (area_m2 - 250))
+        original_price = 1250 + (4 * (area_m2 - 250))
     discounted_price = original_price * 0.8 if apply_discount else original_price
     return original_price, discounted_price
 
@@ -173,6 +173,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
