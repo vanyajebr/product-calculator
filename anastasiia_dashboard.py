@@ -154,7 +154,7 @@ def main():
         # Bottom explanatory text (uses values exactly from results)
         st.markdown("---")
         st.subheader("📄 Dies ist ein Template, das Sie in die Vorlage EffizienzBegleitung HH+ einfügen sollen.")
-       st.markdown(
+        st.markdown(
             f"""
             <p style="font-family: Arial; font-size:11px; color:black;">
             Für Ihr <b>{wohneinheiten}</b> WE-Haus mit <b>{area_m2} m²</b> beträgt der Preis für die Energie-Begleitung 
@@ -173,4 +173,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
