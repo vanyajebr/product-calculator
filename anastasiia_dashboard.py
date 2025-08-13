@@ -1,5 +1,12 @@
 import streamlit as st
 import pandas as pd
+import locale
+
+# Set German number format
+locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
+
+def euro_format(value):
+    return locale.currency(value, grouping=True)
 
 def calculate_heizlastberechnung(area_m2, apply_discount=True):
     """Calculate Heizlastberechnung price with optional 20% discount"""
@@ -10,11 +17,7 @@ def calculate_heizlastberechnung(area_m2, apply_discount=True):
     else:
         original_price = 1000 + (4 * (area_m2 - 250))
     
-    if apply_discount:
-        discounted_price = original_price * 0.8
-    else:
-        discounted_price = original_price
-    
+    discounted_price = original_price * 0.8 if apply_discount else original_price
     return original_price, discounted_price
 
 def calculate_hydraulischer_abgleich(area_m2, apply_discount=False):
@@ -26,11 +29,7 @@ def calculate_hydraulischer_abgleich(area_m2, apply_discount=False):
     else:
         original_price = 900 + (4 * (area_m2 - 250))
     
-    if apply_discount:
-        discounted_price = original_price * 0.8
-    else:
-        discounted_price = original_price
-    
+    discounted_price = original_price * 0.8 if apply_discount else original_price
     return original_price, discounted_price
 
 def calculate_isfp(wohneinheiten):
@@ -61,30 +60,23 @@ def main():
     st.title("🧮 Product Bundle Calculator")
     st.markdown("---")
     
-    # Input section
     st.header("📋 Input Information")
     
     col1, col2 = st.columns(2)
-    
     with col1:
         wohneinheiten = st.number_input("Number of Wohneinheiten", min_value=1, value=1, step=1)
-    
     with col2:
         area_m2 = st.number_input("Area (m²)", min_value=1, value=100, step=1)
     
-    # Initialize checkbox state once
     if 'include_isfp' not in st.session_state:
         st.session_state.include_isfp = True
     
-    # Checkbox for including iSFP
     include_isfp = st.checkbox("Include iSFP", value=st.session_state.include_isfp)
-    st.session_state.include_isfp = include_isfp  # keep it updated
+    st.session_state.include_isfp = include_isfp
     
     st.markdown("---")
     
-    # Calculate button
     if st.button("💰 Calculate Total Price", type="primary"):
-        
         # Bundle logic
         if include_isfp:
             heiz_original, heiz_discounted = calculate_heizlastberechnung(area_m2, True)
@@ -97,70 +89,79 @@ def main():
             isfp_original, isfp_final, isfp_subsidy = 0, 0, 0
             bundle_type = "2 Products Bundle (without iSFP)"
         
-        # Product subsidies & final prices
         heiz_forderung = heiz_discounted * 0.5
         heiz_final = heiz_discounted - heiz_forderung
         
         hydr_forderung = hydr_discounted * 0.5
         hydr_final = hydr_discounted - hydr_forderung
         
-        # Totals
         if include_isfp:
-            total_original = heiz_original + hydr_original + isfp_original
             total_discounts = (heiz_original - heiz_discounted) + (hydr_original - hydr_discounted)
             total_forderung = heiz_forderung + hydr_forderung + isfp_subsidy
             total_full_price = heiz_discounted + hydr_discounted + isfp_original
             total_user_pays = heiz_final + hydr_final + isfp_final
         else:
-            total_original = heiz_original + hydr_original
             total_discounts = (heiz_original - heiz_discounted) + (hydr_original - hydr_discounted)
             total_forderung = heiz_forderung + hydr_forderung
             total_full_price = heiz_discounted + hydr_discounted
             total_user_pays = heiz_final + hydr_final
         
-        # Results
-        st.header(f"📊 Calculation Results - {bundle_type}")
+        # Investment cost limit (using full prices)
+        investment_cost_limit = (30000 * wohneinheiten) - (heiz_original + hydr_original + (900 * wohneinheiten))
         
+        # Results section
+        st.header(f"📊 Calculation Results - {bundle_type}")
         col1, col2, col3 = st.columns(3)
         with col1:
-            discount_text = f"-€{total_discounts:.2f} (20% discount)" if total_discounts > 0 else "No discount"
-            st.metric("Full Price", f"€{total_full_price:.2f}", delta=discount_text)
+            discount_text = f"-{euro_format(total_discounts)} (20% discount)" if total_discounts > 0 else "No discount"
+            st.metric("Full Price", euro_format(total_full_price), delta=discount_text)
         with col2:
-            st.metric("User Pays", f"€{total_user_pays:.2f}")
+            st.metric("User Pays", euro_format(total_user_pays))
         with col3:
-            st.metric("Forderung Subsidy", f"€{total_forderung:.2f}")
+            st.metric("Forderung Subsidy", euro_format(total_forderung))
         
         # Breakdown table
         st.subheader("📋 Detailed Breakdown")
-        
         breakdown_data = [
             {
                 'Product': 'Heizlastberechnung',
-                'Original Price': f"€{heiz_original:.2f}",
-                'After 20% Discount': f"€{heiz_discounted:.2f}",
-                'Forderung': f"€{heiz_forderung:.2f}",
-                'Final Price': f"€{heiz_final:.2f}"
+                'Original Price': euro_format(heiz_original),
+                'After 20% Discount': euro_format(heiz_discounted),
+                'Forderung': euro_format(heiz_forderung),
+                'Final Price': euro_format(heiz_final)
             },
             {
                 'Product': 'Hydraulischer Abgleich',
-                'Original Price': f"€{hydr_original:.2f}",
-                'After 20% Discount': f"€{hydr_discounted:.2f}",
-                'Forderung': f"€{hydr_forderung:.2f}",
-                'Final Price': f"€{hydr_final:.2f}"
+                'Original Price': euro_format(hydr_original),
+                'After 20% Discount': euro_format(hydr_discounted),
+                'Forderung': euro_format(hydr_forderung),
+                'Final Price': euro_format(hydr_final)
             }
         ]
-        
         if include_isfp:
             breakdown_data.append({
                 'Product': 'iSFP',
-                'Original Price': f"€{isfp_original:.2f}",
-                'After 20% Discount': f"€{isfp_original:.2f}",
-                'Forderung': f"€{isfp_subsidy:.2f}",
-                'Final Price': f"€{isfp_final:.2f}"
+                'Original Price': euro_format(isfp_original),
+                'After 20% Discount': euro_format(isfp_original),
+                'Forderung': euro_format(isfp_subsidy),
+                'Final Price': euro_format(isfp_final)
             })
-        
         df = pd.DataFrame(breakdown_data)
         st.dataframe(df, use_container_width=True, hide_index=True)
+        
+        # Bottom explanation text
+        st.markdown("---")
+        st.subheader("📄 Dies ist ein Template, das Sie in die Vorlage EffizienzBegleitung HH+ einfügen sollen.")
+        st.markdown(
+            f"Für Ihr **{wohneinheiten}** WE-Haus mit **{area_m2} m²** beträgt der Preis für die Energie-Begleitung "
+            f"**{euro_format(total_full_price)}** (Vollpreis) sowie zusätzlich 3 % für die Einzelmaßnahme Heizung.\n\n"
+            f"Es gibt eine 50 % Förderung auf unsere Leistungen in Höhe von **{euro_format(total_forderung)}** "
+            f"sowie zusätzlich eine 1,5 % Förderung für die Einzelmaßnahme Heizung = "
+            f"**{euro_format(total_user_pays)}** + 1,5 % Endpreis.\n\n"
+            f"Falls das Angebot für Heizung und Montage in Ihrem Fall mehr als **{euro_format(investment_cost_limit)}** "
+            f"beträgt, überschreitet dies die durch die KfW festgelegten staatlichen Fördergrenzen für unsere Leistungen. "
+            f"In diesem Fall entfällt die Förderung für diesen Teil unserer Arbeit, und Sie zahlen den vollen Preis für dieses Produkt."
+        )
 
 if __name__ == "__main__":
     main()
