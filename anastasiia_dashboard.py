@@ -1,31 +1,35 @@
 import streamlit as st
 import pandas as pd
 
-def calculate_heizlastberechnung(area_m2):
-    """Calculate Heizlastberechnung price with 20% iSFP discount"""
-    if area_m2 < 150:
+def calculate_heizlastberechnung(area_m2, apply_discount=True):
+    """Calculate Heizlastberechnung price with optional 20% discount"""
+    if area_m2 <= 150:
         original_price = 900
-        discounted_price = 720  # 20% discount applied
     elif area_m2 <= 250:
         original_price = 1250
-        discounted_price = 1000  # 20% discount applied
     else:
-        original_price = 1000 + (4 * area_m2)
-        discounted_price = original_price * 0.8  # 20% discount applied
+        original_price = 1000 + (4 * (area_m2 - 250))
+    
+    if apply_discount:
+        discounted_price = original_price * 0.8
+    else:
+        discounted_price = original_price
     
     return original_price, discounted_price
 
-def calculate_hydraulischer_abgleich(area_m2):
-    """Calculate Hydraulischer Abgleich price with 20% iSFP discount"""
-    if area_m2 < 150:
+def calculate_hydraulischer_abgleich(area_m2, apply_discount=False):
+    """Calculate Hydraulischer Abgleich with optional 20% discount"""
+    if area_m2 <= 150:
         original_price = 800
-        discounted_price = 640  # 20% discount applied
     elif area_m2 <= 250:
         original_price = 900
-        discounted_price = 720  # 20% discount applied
     else:
-        original_price = 900 + (4 * area_m2)
-        discounted_price = original_price * 0.8  # 20% discount applied
+        original_price = 900 + (4 * (area_m2 - 250))
+    
+    if apply_discount:
+        discounted_price = original_price * 0.8
+    else:
+        discounted_price = original_price
     
     return original_price, discounted_price
 
@@ -52,24 +56,6 @@ def calculate_isfp(wohneinheiten):
     
     final_price = original_price - subsidy
     return original_price, final_price, subsidy
-
-def calculate_antragstellung(wohneinheiten, typ):
-    """Calculate Antragstellung Einzelmaßnahme price"""
-    if typ == "Heizung":
-        if wohneinheiten == 1:
-            base_amount = 30000
-        elif wohneinheiten <= 6:
-            base_amount = 30000 + ((wohneinheiten - 1) * 15000)
-        else:
-            base_amount = 30000 + (5 * 15000) + ((wohneinheiten - 6) * 8000)
-    else:  # Other
-        if wohneinheiten <= 11:
-            base_amount = 60000 * wohneinheiten
-        else:
-            base_amount = 660000  # Limit reached
-    
-    calculated_price = base_amount * 0.03
-    return calculated_price
 
 def main():
     st.title("🧮 Product Bundle Calculator")
@@ -105,14 +91,14 @@ def main():
         # Calculate based on bundle configuration
         if include_isfp:
             # Full bundle: Heizlastberechnung gets 20% discount, Hydraulischer Abgleich stays full price
-            heiz_original, heiz_discounted = calculate_heizlastberechnung(area_m2, apply_discount=True)
-            hydr_original, hydr_discounted = calculate_hydraulischer_abgleich(area_m2, apply_discount=False)
+            heiz_original, heiz_discounted = calculate_heizlastberechnung(area_m2, True)
+            hydr_original, hydr_discounted = calculate_hydraulischer_abgleich(area_m2, False)
             isfp_original, isfp_final, isfp_subsidy = calculate_isfp(wohneinheiten)
             bundle_type = "Full Bundle (with iSFP)"
         else:
             # 2 products only: Hydraulischer Abgleich gets 20% discount, Heizlastberechnung stays full price
-            heiz_original, heiz_discounted = calculate_heizlastberechnung(area_m2, apply_discount=False)
-            hydr_original, hydr_discounted = calculate_hydraulischer_abgleich(area_m2, apply_discount=True)
+            heiz_original, heiz_discounted = calculate_heizlastberechnung(area_m2, False)
+            hydr_original, hydr_discounted = calculate_hydraulischer_abgleich(area_m2, True)
             isfp_original, isfp_final, isfp_subsidy = 0, 0, 0
             bundle_type = "2 Products Bundle (without iSFP)"
         
@@ -185,8 +171,6 @@ def main():
         
         df = pd.DataFrame(breakdown_data)
         st.dataframe(df, use_container_width=True, hide_index=True)
-        
-
 
 if __name__ == "__main__":
     main()
