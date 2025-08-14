@@ -54,7 +54,7 @@ def calculate_isfp(wohneinheiten):
     return original_price, final_price, subsidy
 
 def main():
-    st.title("🧮 Product Bundle Calculator")
+    st.title("🧮 Energieberatungs-Begleitung Heizung+ Calculator")
     st.markdown("---")
     
     # Inputs
@@ -153,7 +153,7 @@ def main():
         
         # Bottom explanatory text (uses values exactly from results)
         st.markdown("---")
-        st.subheader("📄 Dies ist ein Template, das Sie in die Vorlage EffizienzBegleitung HH+ einfügen sollen.")
+        st.subheader("📄 Dies ist ein Template, das Sie in die Vorlage Energieberatungs-Begleitung Heizung+ einfügen sollen.")
         st.markdown(
             f"""
             <p style="font-family: Arial; font-size:14.5px; color:black; font-weight: bold; background-color:transparent;">
@@ -173,6 +173,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
