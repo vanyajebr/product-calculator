@@ -53,6 +53,18 @@ def calculate_isfp(wohneinheiten):
     final_price = original_price - subsidy
     return original_price, final_price, subsidy
 
+# --- Base investment cap by WE:
+# 1 WE = 30k; +15k per WE up to 6 WE (→ 105k);
+# from 7 WE onward = +8k per WE (7 WE = 113k, 8 WE = 121k, ...).
+def investment_base_cap(wohneinheiten: int) -> int:
+    if wohneinheiten <= 1:
+        return 30000
+    elif wohneinheiten <= 6:
+        return 30000 + 15000 * (wohneinheiten - 1)
+    else:
+        # 6 WE is 105k; add 8k for each WE above 6
+        return 105000 + 8000 * (wohneinheiten - 6)
+
 def main():
     st.title("🧮 Energieberatungs-Begleitung Heizung+ Calculator")
     st.markdown("---")
@@ -105,8 +117,10 @@ def main():
             total_full_price = heiz_discounted + hydr_discounted
             total_user_pays = heiz_final + hydr_final
         
-        # Investment cost limit (full prices, no discounts)
-        investment_cost_limit = (30000 * wohneinheiten) - (heiz_original + hydr_original + (900 * wohneinheiten))
+        # --- Investment cost limit ---
+        # Base cap per WE schedule, then subtract HB/HA full prices and 900 € per WE
+        base_cap = investment_base_cap(int(wohneinheiten))
+        investment_cost_limit = base_cap - (heiz_original + hydr_original + (900 * wohneinheiten))
         
         # Results header
         st.header(f"📊 Calculation Results - {bundle_type}")
@@ -161,7 +175,7 @@ def main():
             {euro_de(total_full_price)} (Vollpreis) sowie zusätzlich 3 % für die Einzelmaßnahme Heizung.<br><br>
             Es gibt eine 50 % Förderung auf unsere Leistungen in Höhe von {euro_de(total_forderung)} 
             sowie zusätzlich eine 1,5 % Förderung für die Einzelmaßnahme Heizung = 
-             <span style="font-weight:bold; font-size: 18px;">{euro_de(total_user_pays)} + 1,5 % Endpreis</span>.<br><br>
+            <span style="font-weight:bold; font-size: 18px;">{euro_de(total_user_pays)} + 1,5 % Endpreis</span>.<br><br>
             Falls das Angebot für Heizung und Montage in Ihrem Fall mehr als {euro_de(investment_cost_limit)} 
             beträgt, überschreitet dies die durch die KfW festgelegten staatlichen Fördergrenzen für unsere Leistungen. 
             In diesem Fall entfällt die Förderung für diesen Teil unserer Arbeit, und Sie zahlen den vollen Preis für dieses Produkt.
@@ -170,16 +184,5 @@ def main():
             unsafe_allow_html=True
         )
 
-
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-
-
-
