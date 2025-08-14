@@ -172,13 +172,16 @@ def main():
             f"""
             <p style="font-family: Arial; font-size:14.5px; color:black; font-weight: bold; background-color:transparent;">
             Für Ihr {wohneinheiten} WE-Haus mit {area_m2} m² beträgt der Preis für die Energie-Begleitung 
-            {euro_de(total_full_price)} (Vollpreis) sowie zusätzlich 3 % für die Einzelmaßnahme Heizung.<br><br>
-            Es gibt eine 50 % Förderung auf unsere Leistungen in Höhe von {euro_de(total_forderung)} 
-            sowie zusätzlich eine 1,5 % Förderung für die Einzelmaßnahme Heizung = 
+            {euro_de(total_full_price)} (Gesamtkosten) sowie zusätzlich 3 % für die Einzelmaßnahme Heizung.<br><br>
+            Es gibt eine 50 % Förderung auf unsere Leistungen in Höhe von {euro_de(total_forderung)}.
+            Die Einzelmaßnahmeprüfung wird ebenfalls zu 50 % gefördert. Das bedeutet, Sie bekommen 1,5 % auf die Angebotssumme zurück = 
             <span style="font-weight:bold; font-size: 18px;">{euro_de(total_user_pays)} + 1,5 % Endpreis</span>.<br><br>
-            Falls das Angebot für Heizung und Montage in Ihrem Fall mehr als {euro_de(investment_cost_limit)} 
-            beträgt, überschreitet dies die durch die KfW festgelegten staatlichen Fördergrenzen für unsere Leistungen. 
-            In diesem Fall entfällt die Förderung für diesen Teil unserer Arbeit, und Sie zahlen den vollen Preis für dieses Produkt.
+            Die Förderung ist nur bis zur maximalen Höchstgrenze der anrechenbaren Kosten möglich. Falls das Angebot für Heizung und 
+            Montage in Ihrem Fall mehr als {euro_de(investment_cost_limit)} beträgt, überschreitet dies die durch die KfW festgelegten 
+            staatlichen Fördergrenzen für unsere Leistungen. In diesem Fall entfällt die Förderung für diesen Teil unserer Arbeit, 
+            und Sie zahlen den vollen Preis für dieses Produkt.<br><br>
+            Die förderfähigen Ausgaben sind gedeckelt auf 30.000 Euro für die erste Wohneinheit, die zweite bis sechste Wohneinheit 
+            kann mit je 15.000 Euro und ab der siebten Wohneinheit mit je 8.000 Euro angerechnet werden.
             </p>
             """,
             unsafe_allow_html=True
@@ -186,3 +189,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
