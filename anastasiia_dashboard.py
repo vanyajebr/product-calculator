@@ -120,7 +120,7 @@ def main():
         # --- Investment cost limit ---
         # Base cap per WE schedule, then subtract HB/HA full prices and 900 € per WE
         base_cap = investment_base_cap(int(wohneinheiten))
-        investment_cost_limit = base_cap - (heiz_original + hydr_original + (900 * wohneinheiten))
+        investment_cost_limit = base_cap - (heiz_original + hydr_original + (0.03 * base_cap))
         
         # Results header
         st.header(f"📊 Calculation Results - {bundle_type}")
@@ -189,4 +189,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
