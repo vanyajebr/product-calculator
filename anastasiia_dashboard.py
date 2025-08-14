@@ -180,8 +180,9 @@ def main():
             Montage in Ihrem Fall mehr als {euro_de(investment_cost_limit)} beträgt, überschreitet dies die durch die KfW festgelegten 
             staatlichen Fördergrenzen für unsere Leistungen. In diesem Fall entfällt die Förderung für diesen Teil unserer Arbeit, 
             und Sie zahlen den vollen Preis für dieses Produkt.<br><br>
-            Die förderfähigen Ausgaben sind gedeckelt auf 30.000 Euro für die erste Wohneinheit, die zweite bis sechste Wohneinheit 
-            kann mit je 15.000 Euro und ab der siebten Wohneinheit mit je 8.000 Euro angerechnet werden.
+            Für das Projekt können die förderfähigen Ausgaben – einschließlich unserer Leistungen – pro Wohneinheit wie folgt berücksichtigt 
+            werden: für die erste Wohneinheit bis zu 30.000 €, für jede der Wohneinheiten zwei bis sechs zusätzlich bis zu 15.000 €, und für 
+            jede weitere Wohneinheit zusätzlich bis zu 8.000 €.
             </p>
             """,
             unsafe_allow_html=True
@@ -189,5 +190,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
