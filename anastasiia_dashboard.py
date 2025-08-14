@@ -182,8 +182,8 @@ def main():
             3) Hinweis zur Fördergrenze<br><br>
             Die Förderung ist gesetzlich auf eine von der KfW festgelegte Höchstgrenze der anrechenbaren Kosten pro Wohneinheit (WE) begrenzt. 
             Diese Grenze umfasst sämtliche förderfähigen Ausgaben:<br><br>
-            - die Kosten für die Energieberatungs-Begleitung,
-            - die Investitionskosten für das neue Heizungssystem sowie,
+            - die Kosten für die Energieberatungs-Begleitung,<br>
+            - die Investitionskosten für das neue Heizungssystem sowie,<br>
             - die Montage- und Installationskosten.<br><br>
             Für Ihr Haus mit {wohneinheiten} WE liegt die von der KfW definierte Obergrenze der anrechenbaren Kosten bei {euro_de(base_cap)}.
             Da unsere Beratungsleistung bereits darin enthalten ist, verbleibt für die Einzelmaßnahme Heizung und die Montage ein maximal 
@@ -196,6 +196,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
