@@ -171,18 +171,24 @@ def main():
         st.markdown(
             f"""
             <p style="font-family: Arial; font-size:14.5px; color:black; font-weight: bold; background-color:transparent;">
-            Für Ihr {wohneinheiten} WE-Haus mit {area_m2} m² beträgt der Preis für die Energieberatungs-Begleitung Heizung+ 
-            {euro_de(total_full_price)} (Gesamtkosten) sowie zusätzlich 3 % für die Einzelmaßnahme Heizung.<br><br>
-            Es gibt eine 50 % Förderung auf unsere Leistungen in Höhe von {euro_de(total_forderung)}.
-            Die Einzelmaßnahmeprüfung wird ebenfalls zu 50 % gefördert. Das bedeutet, Sie bekommen 1,5 % auf die Angebotssumme zurück = 
-            <span style="font-weight:bold; font-size: 18px;">{euro_de(total_user_pays)} + 1,5 % Endpreis</span>.<br><br>
-            Die Förderung ist nur bis zur maximalen Höchstgrenze der anrechenbaren Kosten möglich. Falls das Angebot für Heizung und 
-            Montage in Ihrem Fall mehr als {euro_de(investment_cost_limit)} beträgt, überschreitet dies die durch die KfW festgelegten 
-            staatlichen Fördergrenzen für unsere Leistungen. In diesem Fall entfällt die Förderung für diesen Teil unserer Arbeit, 
-            und Sie zahlen den vollen Preis für dieses Produkt.<br><br>
-            Für das Projekt können die förderfähigen Ausgaben – einschließlich unserer Leistungen – pro Wohneinheit wie folgt berücksichtigt 
-            werden: für die erste Wohneinheit bis zu 30.000 €, für jede der Wohneinheiten zwei bis sechs zusätzlich bis zu 15.000 €, und für 
-            jede weitere Wohneinheit zusätzlich bis zu 8.000 €.
+            1) Energieberatungs-Begleitung Heizung+<br><br>            
+            Für Ihr Haus mit {wohneinheiten} WE ({area_m2}m²) beträgt der Preis für die Energieberatungs-Begleitung Heizung+ 
+            {euro_de(total_full_price)} (Gesamtkosten). Darauf erhalten Sie eine 50 % Förderung, also {euro_de(total_forderung)} Zuschuss.
+            Ihr Eigenanteil für diese Leistung beträgt daher 1.410,00 €.<br><br>
+            2) Einzelmaßnahme Heizung (Prüfung)<br><br>
+            Zusätzlich fällt eine Prüfung der Einzelmaßnahme Heizung an. Diese wird mit 3 % der Angebotssumme berechnet.
+            Auch hier übernimmt der Staat 50 % der Kosten. Ihr Eigenanteil beträgt daher nur 1,5 % der Angebotssumme.
+            Gesamtbetrag für Sie: <span style="font-weight:bold; font-size: 18px;">{euro_de(total_user_pays)} + 1,5 % der Angebotssumme</span>.<br><br>
+            3) Hinweis zur Fördergrenze<br><br>
+            Die Förderung ist gesetzlich auf eine von der KfW festgelegte Höchstgrenze der anrechenbaren Kosten pro Wohneinheit (WE) begrenzt. 
+            Diese Grenze umfasst sämtliche förderfähigen Ausgaben:<br><br>
+            - die Kosten für die Energieberatungs-Begleitung,<br><br>
+            - die Investitionskosten für das neue Heizungssystem sowie,<br><br>
+            - die Montage- und Installationskosten.<br><br>
+            Für Ihr Haus mit {wohneinheiten} WE liegt die von der KfW definierte Obergrenze der anrechenbaren Kosten bei {euro_de(base_cap)}.
+            Da unsere Beratungsleistung bereits darin enthalten ist, verbleibt für die Einzelmaßnahme Heizung und die Montage ein maximal 
+            förderfähiger Betrag von {euro_de(investment_cost_limit)}. Überschreitet die Angebotssumme diese Grenze, tragen Sie die Kosten 
+            der Energieberatungs-Begleitung vollständig selbst.
             </p>
             """,
             unsafe_allow_html=True
@@ -190,6 +196,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
