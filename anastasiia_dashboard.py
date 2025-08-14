@@ -171,7 +171,7 @@ def main():
         st.markdown(
             f"""
             <p style="font-family: Arial; font-size:14.5px; color:black; font-weight: bold; background-color:transparent;">
-            Für Ihr {wohneinheiten} WE-Haus mit {area_m2} m² beträgt der Preis für die Energie-Begleitung 
+            Für Ihr {wohneinheiten} WE-Haus mit {area_m2} m² beträgt der Preis für die Energieberatungs-Begleitung Heizung+ 
             {euro_de(total_full_price)} (Gesamtkosten) sowie zusätzlich 3 % für die Einzelmaßnahme Heizung.<br><br>
             Es gibt eine 50 % Förderung auf unsere Leistungen in Höhe von {euro_de(total_forderung)}.
             Die Einzelmaßnahmeprüfung wird ebenfalls zu 50 % gefördert. Das bedeutet, Sie bekommen 1,5 % auf die Angebotssumme zurück = 
@@ -190,6 +190,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
